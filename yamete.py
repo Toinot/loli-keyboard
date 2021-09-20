@@ -31,8 +31,8 @@ def on_press(key):
         print(keySort)
 
 # Collect events until released
-conn = sqlite3.connect("Yamete_DB.db")
-cur = conn.cursor()
+conn = sqlite3.connect("Yamete_DB.db")         
+cur = conn.cursor()                          
 with keyboard.Listener(
         on_press=on_press) as listener:
     try:
