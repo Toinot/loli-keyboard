@@ -6,9 +6,9 @@ import sqlite3
 class MyException(Exception): pass
 
 def on_press(key):
-    conn = sqlite3.connect("Yamete_DB.db")
-    cur = conn.cursor()
     if key == keyboard.Key.esc:
+        cur.close()
+        conn.close()
         raise MyException(key)
     else :
         keyVar = str(key)
@@ -18,6 +18,7 @@ def on_press(key):
             keySort = keyVar[1]
         try:
             cur.execute("SELECT way FROM Sounds WHERE key = ?", (keySort,))
+            conn.commit()
             liste = cur.fetchall()
             sound = liste[0][0]
             pygame.mixer.init()
@@ -30,6 +31,8 @@ def on_press(key):
         print(keySort)
 
 # Collect events until released
+conn = sqlite3.connect("Yamete_DB.db")
+cur = conn.cursor()
 with keyboard.Listener(
         on_press=on_press) as listener:
     try:
