@@ -1,11 +1,13 @@
 # Créé par toinot.gury, le 17/09/2021 en Python 3.7
 from pynput import keyboard
 import pygame
-from var import *
+import sqlite3
 
 class MyException(Exception): pass
 
 def on_press(key):
+    conn = sqlite3.connect("Yamete_DB.db")
+    cur = conn.cursor()
     if key == keyboard.Key.esc:
         raise MyException(key)
     else :
@@ -15,8 +17,11 @@ def on_press(key):
         else:
             keySort = keyVar[1]
         try:
+            cur.execute("SELECT way FROM Sounds WHERE key = ?", (keySort,))
+            liste = cur.fetchall()
+            sound = liste[0][0]
             pygame.mixer.init()
-            pygame.mixer.music.load(globals()[keySort]) #mp3 aussi
+            pygame.mixer.music.load(sound) #mp3 aussi
             pygame.mixer.music.play()
             while pygame.mixer.music.get_busy() == True:
                 continue
